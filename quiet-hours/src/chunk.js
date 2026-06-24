@@ -42,7 +42,7 @@ export class ChunkManager {
     return [Math.round(x / CHUNK), Math.round(z / CHUNK)];
   }
 
-  update(playerPos) {
+  update(playerPos, budget = 2) {
     const [pcx, pcz] = this.worldToChunk(playerPos.x, playerPos.z);
 
     // desired set
@@ -64,8 +64,8 @@ export class ChunkManager {
       }
     }
 
-    // load / upgrade. Limit builds per frame to avoid hitches.
-    let budget = 2;
+    // load / upgrade. Limit builds per frame to avoid hitches (caller sets the budget:
+    // a higher one during the loading warm-up, the default 2 in steady state).
     for (const [k, w] of want) {
       const existing = this.chunks.get(k);
       if (!existing) {
