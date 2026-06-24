@@ -86,9 +86,14 @@
       const out = ctx.createGain();
       out.gain.value = this.volume;
       this.outGain = out;
-      bus.connect(analyser);
-      analyser.connect(out);
+      // Audible path: only the music bus reaches the speakers.
+      bus.connect(out);
       out.connect(ctx.destination);
+      // Analysis tap: the bus also feeds the analyser, but the analyser's output is
+      // intentionally left unconnected. Anything routed into the analyser (music OR the
+      // microphone) is measured for the visuals but never played back through the
+      // speakers — so enabling the mic can't echo/feedback through the output.
+      bus.connect(analyser);
       return ctx;
     }
 
