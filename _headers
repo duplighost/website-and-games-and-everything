@@ -45,9 +45,6 @@
 /banana/game.js
   Cache-Control: no-store, no-cache, must-revalidate, max-age=0
 
-/spiggot/index.html
-  Cache-Control: no-store, no-cache, must-revalidate, max-age=0
-
 /quiet-hours/index.html
   Cache-Control: no-store, no-cache, must-revalidate, max-age=0
 
