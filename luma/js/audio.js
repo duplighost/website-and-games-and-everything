@@ -86,14 +86,11 @@
       const out = ctx.createGain();
       out.gain.value = this.volume;
       this.outGain = out;
-      // Audible path: only the music bus reaches the speakers.
+      // Split analysis from audible output. AnalyserNode passes audio through,
+      // so routing analyser -> destination would monitor microphone input.
+      bus.connect(analyser);
       bus.connect(out);
       out.connect(ctx.destination);
-      // Analysis tap: the bus also feeds the analyser, but the analyser's output is
-      // intentionally left unconnected. Anything routed into the analyser (music OR the
-      // microphone) is measured for the visuals but never played back through the
-      // speakers — so enabling the mic can't echo/feedback through the output.
-      bus.connect(analyser);
       return ctx;
     }
 
@@ -127,7 +124,7 @@
       this._emit();
     }
 
-    stop() { this.setSource("none"); }
+    stop() { return this.setSource("none"); }
 
     _teardown(keep) {
       if (this._micSource && keep !== "mic") {
@@ -140,10 +137,18 @@
       }
       if (this.audioEl && keep !== "file") {
         try { this.audioEl.pause(); } catch (e) {}
+        try { this.audioEl.removeAttribute("src"); this.audioEl.load(); } catch (e) {}
+      }
+      if (this._objUrl && keep !== "file") {
+        try { URL.revokeObjectURL(this._objUrl); } catch (e) {}
+        this._objUrl = null;
       }
     }
 
     async _startMic() {
+      if (!navigator.mediaDevices?.getUserMedia) {
+        throw new Error("Microphone capture is not available in this browser.");
+      }
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false },
         video: false,

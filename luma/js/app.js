@@ -278,7 +278,11 @@
         }
       });
 
-      this.canvas.addEventListener("webglcontextlost", (e) => { e.preventDefault(); this.running = false; });
+      this.canvas.addEventListener("webglcontextlost", (e) => {
+        e.preventDefault();
+        this.running = false;
+        this._fatal(new Error("The WebGL context was lost. Reload the page to restart the visualizer."));
+      });
       this.canvas.addEventListener("webglcontextrestored", () => location.reload());
       window.addEventListener("error", (e) => { if (e.error && !this.running) this._fatal(e.error); });
     }

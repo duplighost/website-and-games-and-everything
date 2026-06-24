@@ -40,13 +40,22 @@ function showWebGLFallback(message) {
   if (startEl) {
     const card = startEl.querySelector(".card");
     if (card) {
-      card.innerHTML = `
-        <h1>Quiet Hours</h1>
-        <p class="lede">${message}</p>
-        <p class="touch-controls">This toy needs WebGL to draw the city. Try a current Chrome, Safari, Edge, or Firefox with hardware acceleration enabled.</p>
-        <button id="fallbackHome" type="button">Back to Qualiacology</button>
-      `;
-      card.querySelector("#fallbackHome")?.addEventListener("click", () => { location.href = "/"; });
+      card.replaceChildren();
+      const title = document.createElement("h1");
+      title.textContent = "Quiet Hours";
+      const lede = document.createElement("p");
+      lede.className = "lede";
+      lede.textContent = message;
+      const detail = document.createElement("p");
+      detail.className = "touch-controls";
+      detail.style.display = "block";
+      detail.textContent = "This archived toy needs WebGL to draw the city. Try a current Chrome, Safari, Edge, or Firefox with hardware acceleration enabled.";
+      const home = document.createElement("button");
+      home.id = "fallbackHome";
+      home.type = "button";
+      home.textContent = "Back to Qualiacology";
+      home.addEventListener("click", () => { location.href = "/"; });
+      card.append(title, lede, detail, home);
     }
     startEl.classList.remove("hidden");
   }
@@ -96,7 +105,7 @@ async function boot() {
 
   setProgress(0.12, "mixing the paint");
   await frame();
-  mats = new MaterialLibrary({ cheapGlass: SETTINGS.tier !== "high" });
+  mats = new MaterialLibrary();
   ["grass", "asphalt", "concrete", "brick-red", "wood-floor", "glass"].forEach((n) => mats.get(n));
 
   chunks = new ChunkManager(scene, mats, { loadR: SETTINGS.loadR, detailR: SETTINGS.detailR });
@@ -271,4 +280,7 @@ document.addEventListener("click", () => {
   if (!IS_TOUCH && startEl.classList.contains("hidden") && !document.pointerLockElement && player) player.requestLock();
 });
 
-if (renderer) boot();
+if (renderer) boot().catch((err) => {
+  console.error(err);
+  showWebGLFallback(`Quiet Hours could not finish loading: ${err && err.message ? err.message : err}`);
+});

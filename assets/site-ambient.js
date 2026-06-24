@@ -5,11 +5,6 @@
   const STORAGE_KEY = 'qualiacologyAmbientAudioEnabled';
   const QUIET_VOLUME = 0.45;
 
-  // localStorage can throw in private/embedded/locked-down contexts; never let
-  // a storage failure take down the whole ambient-audio control.
-  const readPref = () => { try { return localStorage.getItem(STORAGE_KEY); } catch (_) { return null; } };
-  const writePref = (value) => { try { localStorage.setItem(STORAGE_KEY, value); } catch (_) {} };
-
   const onReady = (fn) => {
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', fn, { once: true });
@@ -35,6 +30,13 @@
     toggle.className = 'ambient-audio-toggle';
     toggle.innerHTML = '<span class="ambient-audio-dot" aria-hidden="true"></span><span data-ambient-audio-label>ambient</span>';
     toggle.setAttribute('aria-label', 'Toggle quiet background music');
+
+    const readPref = () => {
+      try { return localStorage.getItem(STORAGE_KEY); } catch (_) { return null; }
+    };
+    const writePref = (value) => {
+      try { localStorage.setItem(STORAGE_KEY, value); } catch (_) {}
+    };
 
     let enabled = readPref() !== 'off';
     let started = false;

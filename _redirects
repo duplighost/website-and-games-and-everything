@@ -26,6 +26,9 @@
 /quiet-hours.html /quiet-hours/         301!
 /quiet          /quiet-hours/            302
 /city           /quiet-hours/            302
+/spiggot        /spiggot/index.html      301!
+/spiggot.html   /spiggot/                301!
+/moonfeel       /spiggot/                302
 /banana         /banana/index.html       301!
 /banana.html    /banana/                 301!
 /screaming-banana /banana/               302

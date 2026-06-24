@@ -4,7 +4,7 @@
 // arrangement layers UP with intensity (depth + combo + boss) so chaining kills cranks
 // the music toward full outrun. Sidechain pump on the kick, a dotted-eighth delay send,
 // and a soft limiter keep it glued. Public API is unchanged: ensureBgm / toggleBgm.
-import { state } from '../state.js';
+import { state, saveNow } from '../state.js';
 
 // ── musical material ─────────────────────────────────────────────────────────
 const SCALES = {
@@ -245,19 +245,17 @@ export function ensureBgm() {
     buildGraph();
     active = derivePalette(); STEP = 60 / active.bpm / 4;
     delay.delayTime.value = (60 / active.bpm) * 0.75;
+    nextTime = ac.currentTime + 0.06;
+    timer = setInterval(schedule, POLL);
   }
-  if (timer === null) { nextTime = ac.currentTime + 0.06; timer = setInterval(schedule, POLL); }  // (re)arm the scheduler
   if (ac.state === 'suspended') ac.resume();
   master.gain.setTargetAtTime(0.22, ac.currentTime, 0.4); // gentle fade-in
 }
 
 export function toggleBgm() {
   state.save.settings.bgm = !state.save.settings.bgm;
-  if (state.save.settings.bgm) {
-    ensureBgm();
-  } else if (master) {
-    master.gain.setTargetAtTime(0, ac.currentTime, 0.06);
-    if (timer !== null) { clearInterval(timer); timer = null; }   // stop polling while muted; ensureBgm re-arms on re-enable
-  }
+  if (state.save.settings.bgm) ensureBgm();
+  else if (master) master.gain.setTargetAtTime(0, ac.currentTime, 0.06);
+  saveNow();
   return state.save.settings.bgm;
 }

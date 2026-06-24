@@ -567,15 +567,9 @@ function curtainGlow() {
 
 // ------------------------------------------------------------------ Material library
 export class MaterialLibrary {
-  constructor(opts = {}) {
+  constructor() {
     this.cache = {};
     this.tintCache = {};
-    // Transmission materials (true refractive glass/water) force three.js to
-    // re-render the opaque scene to a texture every frame — the single biggest
-    // GPU cost in the city, and it was not otherwise tied to the quality tier.
-    // On low/medium, fall back to cheap transparent MeshStandardMaterial so
-    // windows and water still read as glassy without the per-frame pass.
-    this.cheapGlass = !!opts.cheapGlass;
   }
 
   _pbr(key, fn, opts) {
@@ -703,22 +697,17 @@ export class MaterialLibrary {
         return this._tex(name, () => rug(), 0.98);
       // ---- glass / metal / misc
       case "glass":
-        m = this.cheapGlass
-          ? new THREE.MeshStandardMaterial({
-              color: 0xaecad8, roughness: 0.08, metalness: 0.0,
-              transparent: true, opacity: 0.28, envMapIntensity: 1.4,
-            })
-          : new THREE.MeshPhysicalMaterial({
-              color: 0xaecad8,
-              roughness: 0.04,
-              metalness: 0,
-              transmission: 0.9,
-              thickness: 0.04,
-              ior: 1.45,
-              transparent: true,
-              opacity: 0.32,
-              envMapIntensity: 1.4,
-            });
+        m = new THREE.MeshPhysicalMaterial({
+          color: 0xaecad8,
+          roughness: 0.04,
+          metalness: 0,
+          transmission: 0.9,
+          thickness: 0.04,
+          ior: 1.45,
+          transparent: true,
+          opacity: 0.32,
+          envMapIntensity: 1.4,
+        });
         break;
       case "mirror":
         m = new THREE.MeshStandardMaterial({ color: 0xc8d0d4, roughness: 0.02, metalness: 1.0, envMapIntensity: 1.5 });
@@ -747,9 +736,7 @@ export class MaterialLibrary {
       case "lit-window":
         return this._setRepeat(this._tex(name, () => curtainGlow(), 0.6, 0.0, 0x000000), 1, { emissive: 0xffd9a0, emissiveIntensity: 0.0 });
       case "water":
-        m = this.cheapGlass
-          ? new THREE.MeshStandardMaterial({ color: 0x2a4a55, roughness: 0.12, metalness: 0.0, transparent: true, opacity: 0.86, envMapIntensity: 1.2 })
-          : new THREE.MeshPhysicalMaterial({ color: 0x2a4a55, roughness: 0.08, metalness: 0.0, transmission: 0.5, transparent: true, opacity: 0.8, envMapIntensity: 1.2 });
+        m = new THREE.MeshPhysicalMaterial({ color: 0x2a4a55, roughness: 0.08, metalness: 0.0, transmission: 0.5, transparent: true, opacity: 0.8, envMapIntensity: 1.2 });
         break;
       case "hedge":
         m = new THREE.MeshStandardMaterial({ color: 0x2e4a26, roughness: 1.0 });

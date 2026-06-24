@@ -16,21 +16,31 @@ import { buildFinal } from './world/final.js';
 
 const canvas = document.getElementById('game');
 
+function showFatal(title, detail) {
+  document.body.innerHTML = `
+    <main class="runtime-fatal">
+      <div>
+        <h1>${title}</h1>
+        <p>${detail}</p>
+        <p><a href="/">Back to Qualiacology</a></p>
+      </div>
+    </main>
+  `;
+}
+
+if (!canvas) {
+  showFatal('Marrow failed', 'The game canvas was not found.');
+  throw new Error('Missing #game canvas');
+}
+
 // --- renderer ---
-// WebGL can be unavailable (blocklisted GPU, disabled, headless, very old
-// device). Creating the renderer throws in that case; show a readable fallback
-// with a way back to the site instead of a silent black screen, then stop boot.
 let renderer;
 try {
-  if (!canvas) throw new Error('Marrow: missing #game canvas');
   renderer = new THREE.WebGLRenderer({
     canvas, antialias: false, stencil: false, powerPreference: 'high-performance',
   });
 } catch (err) {
-  const fatal = document.getElementById('fatal');
-  if (fatal) fatal.classList.add('show');
-  const boot = document.getElementById('boot');
-  if (boot) boot.style.display = 'none';
+  showFatal('WebGL failed', 'Marrow needs WebGL to draw the dark. Try a current browser with hardware acceleration enabled.');
   throw err;
 }
 renderer.setPixelRatio(Quality.pixelRatio);
@@ -100,17 +110,7 @@ function disposeGroup(group) {
     if (o.geometry) o.geometry.dispose();
     if (o.material) {
       const mats = Array.isArray(o.material) ? o.material : [o.material];
-      for (const m of mats) {
-        // material.dispose() does NOT free the material's textures. Dispose the
-        // per-instance (uncached) ones — chiefly portraitTexture/softDot, which
-        // are minted fresh per object and otherwise leak GPU memory on every
-        // level reload. Shared library textures are tagged __cached; leave them.
-        for (const k of ['map', 'normalMap', 'roughnessMap', 'emissiveMap', 'alphaMap', 'aoMap', 'bumpMap']) {
-          const tex = m[k];
-          if (tex && !tex.__cached) tex.dispose();
-        }
-        m.dispose();
-      }
+      for (const m of mats) m.dispose(); // shared canvas textures stay cached
     }
   });
 }
@@ -119,11 +119,11 @@ function unloadLevel() {
   scene.remove(currentLevel.group);
   disposeGroup(currentLevel.group);
   if (ctx.flamesExtra) ctx.flamesExtra.length = 0;
-  Audio.stopCrescendo();   // defensive: never carry the ending swell across a level teardown
   currentLevel = null;
 }
 
 function loadLevel(name, opts = {}) {
+  Audio.stopCrescendo();
   unloadLevel();
   ctx.interactables = []; ctx.triggers = [];
   const level = builders[name](ctx);
@@ -220,17 +220,12 @@ function start() {
 }
 UI.boot.addEventListener('pointerdown', start);
 UI.boot.addEventListener('touchstart', (e) => { e.preventDefault(); start(); }, { passive: false });
-// Keyboard parity: the boot screen is focusable (role=button, tabindex=0), so
-// Enter/Space should start the game too. Focus it so a keyboard user can act.
 UI.boot.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); start(); }
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    start();
+  }
 });
-try { UI.boot.focus({ preventScroll: true }); } catch (e) {}
-// The quiet "back to site" link lives inside the boot overlay; keep taps on it
-// from also firing the boot's start handler.
-const backlink = document.getElementById('backlink');
-if (backlink) ['pointerdown', 'touchstart'].forEach((ev) =>
-  backlink.addEventListener(ev, (e) => e.stopPropagation()));
 
 function showMobHint() {
   const W = window.innerWidth, H = window.innerHeight;

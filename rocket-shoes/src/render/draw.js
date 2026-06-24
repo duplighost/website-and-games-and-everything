@@ -16,10 +16,15 @@ let canvas = null, ctx = null, bloomCanvas = null, bloomCtx = null;
 
 export function initDraw(c, bc) {
   canvas = c;
-  ctx = c.getContext('2d', { alpha: false, desynchronized: true });
   bloomCanvas = bc;
-  bloomCtx = bc.getContext('2d');
-  return ctx;
+  try {
+    ctx = c && c.getContext ? c.getContext('2d', { alpha: false, desynchronized: true }) : null;
+    bloomCtx = bc && bc.getContext ? bc.getContext('2d') : null;
+  } catch (_) {
+    ctx = null;
+    bloomCtx = null;
+  }
+  return Boolean(ctx && bloomCtx);
 }
 
 export function drawFrame() {

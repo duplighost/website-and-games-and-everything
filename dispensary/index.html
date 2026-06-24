@@ -333,16 +333,16 @@
     <p class="tagline">Compounds for conditions that don't exist yet.</p>
   </header>
 
-  <button class="capsule" id="dispense" aria-label="Dispense a compound">
+  <button class="capsule" id="dispense" type="button" aria-label="Dispense a compound">
     <span class="capsule-body">
       <span class="capsule-half white">DIS</span>
       <span class="capsule-half cherry">PENSE</span>
     </span>
   </button>
 
-  <main aria-live="polite">
+  <main>
     <div class="restock" id="restock" hidden>FORMULARY EXHAUSTED &mdash; RESTOCKING SHELVES&hellip;</div>
-    <div id="tray">
+    <div id="tray" aria-live="polite">
       <div class="empty-tray">
         The counter is empty.<br />
         Press the capsule. Tell no one your symptoms &mdash;<br />
@@ -537,7 +537,9 @@
       return String(s)
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
     }
 
     function field(labelText, value, warn) {

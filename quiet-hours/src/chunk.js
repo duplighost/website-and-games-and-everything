@@ -64,8 +64,7 @@ export class ChunkManager {
       }
     }
 
-    // load / upgrade. Limit builds per frame to avoid hitches (caller sets the budget:
-    // a higher one during the loading warm-up, the default 2 in steady state).
+    // load / upgrade. Limit builds per frame to avoid hitches.
     for (const [k, w] of want) {
       const existing = this.chunks.get(k);
       if (!existing) {

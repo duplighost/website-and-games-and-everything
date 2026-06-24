@@ -36,6 +36,7 @@ const PLAYER_EFFECT_SCALE = Math.max(0.78, PLAYER_DRAW_SCALE);
 function loadInto(slot, src) {
   const im = new Image();
   im.onload = () => { slot.ready = true; };
+  im.onerror = () => { slot.error = true; };
   im.src = src;
   slot.img = im;
 }

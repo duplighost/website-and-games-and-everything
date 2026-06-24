@@ -2,9 +2,8 @@
 // just black fades, white stinger flashes, a red dread pulse, and a reticle dot
 // that swells when something can be touched.
 
-import { REDUCED } from './config.js';
-
 const $ = (id) => document.getElementById(id);
+const REDUCED_MOTION = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 export const UI = {
   fade: $('fade'), flash: $('flash'), reticle: $('reticle'),
@@ -30,9 +29,10 @@ export const UI = {
   },
 
   flashWhite(intensity = 0.85, ms = 240) {
-    // Reduced-motion: cap the full-screen flash so it reads as a dim pulse
-    // rather than a photosensitivity-triggering strobe.
-    if (REDUCED) intensity = Math.min(intensity, 0.16);
+    if (REDUCED_MOTION) {
+      intensity = Math.min(intensity, 0.18);
+      ms = Math.min(ms, 120);
+    }
     // Drive the decay with a forced reflow rather than rAF: rAF callbacks are
     // throttled in background tabs and can be starved under heavy load, which
     // could otherwise leave the white flash stuck on. A reflow commits the peak

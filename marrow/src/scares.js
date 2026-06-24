@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { Entity } from './entity.js';
 import { Audio } from './audio.js';
-import { REDUCED } from './config.js';
+const REDUCED_MOTION = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // The Director decides when to frighten you. It owns the Presence, runs the
 // flashlight's failing nerve, sprinkles systemic dread that scales with the
@@ -92,8 +92,8 @@ export class Director {
     this.lastLoud = this._nowS();      // any full stinger resets the loud cooldown
     const hard = type === 'shriekHard';
     Audio.stinger(type);
-    this.ctx.ui.flashWhite(hard ? 0.95 : (type === 'breath' ? 0.35 : 0.7), 220);
-    this.ctx.post.kick('pulse', 0.7);
+    this.ctx.ui.flashWhite(hard ? 0.95 : (type === 'breath' ? 0.35 : 0.7), REDUCED_MOTION ? 120 : 220);
+    this.ctx.post.kick('pulse', REDUCED_MOTION ? 0.2 : 0.7);
     this.player.addShake(hard ? 1.2 : 0.7);
     Audio.bumpHeart(1, 110);
     this.ctx.ui.buzz(hard ? [70, 50, 140] : (type === 'breath' ? 30 : 60));
@@ -207,18 +207,16 @@ export class Director {
 
   // ---- the failing torch (mostly cosmetic; an occasional longer stutter) ----
   _updateTorch(dt) {
+    if (REDUCED_MOTION) { this.flickering = false; this.player.flicker = 1; return; }
     if (this.flickering) {
       this.flickT -= dt;
-      // Reduced-motion: keep the failing torch from hard-strobing to near-black.
-      this.player.flicker = REDUCED
-        ? (0.82 + Math.random() * 0.18)
-        : (Math.random() < 0.5 ? (0.08 + Math.random() * 0.5) : 1);
+      this.player.flicker = Math.random() < 0.5 ? (0.08 + Math.random() * 0.5) : 1;
       if (this.flickT <= 0) { this.flickering = false; this.player.flicker = 1; }
     } else {
       this.player.flicker = 1 - Math.random() * 0.025;   // a constant faint unsteadiness
     }
   }
-  _torchStutter() { this.flickering = true; this.flickT = 0.2 + Math.random() * 0.4; }
+  _torchStutter() { if (REDUCED_MOTION) return; this.flickering = true; this.flickT = 0.2 + Math.random() * 0.4; }
 
   // ---- the dread scheduler -------------------------------------------------
   // Most beats are quiet. Now and then the room "builds" — and that build pays

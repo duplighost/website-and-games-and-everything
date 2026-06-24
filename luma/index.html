@@ -10,22 +10,23 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="LUMA" />
   <link rel="manifest" href="manifest.webmanifest" />
-  <title>LUMA</title>
-  <link rel="canonical" href="https://qualiacology.com/luma/" />
-  <link rel="icon" href="assets/icon.svg" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Qualiacology" />
-  <meta property="og:title" content="LUMA" />
-  <meta property="og:description" content="A living field of light that moves on its own and comes alive to your music or the mic. Touch paints it." />
+  <meta property="og:title" content="LUMA | Qualiacology" />
+  <meta property="og:description" content="A living field of light that moves on its own and comes alive to your music or microphone." />
   <meta property="og:url" content="https://qualiacology.com/luma/" />
   <meta property="og:image" content="https://qualiacology.com/assets/toy-luma.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="LUMA" />
-  <meta name="twitter:description" content="A living field of light that comes alive to your music or the mic." />
+  <meta name="twitter:title" content="LUMA | Qualiacology" />
+  <meta name="twitter:description" content="A living field of light that moves on its own and comes alive to your music or microphone." />
   <meta name="twitter:image" content="https://qualiacology.com/assets/toy-luma.jpg" />
+  <link rel="canonical" href="https://qualiacology.com/luma/" />
+  <link rel="icon" href="/assets/favicon.svg" />
+  <title>LUMA | Qualiacology</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+  <a class="home-link home-link-top" href="/">← Qualiacology</a>
   <div id="app">
     <canvas id="gl"></canvas>
 
@@ -35,13 +36,13 @@
       <div id="hint" class="hint">drag to play · tap the note for your music</div>
 
       <div id="controls">
-        <button id="mic" class="round" aria-label="Use microphone">
+        <button id="mic" class="round" type="button" aria-label="Use microphone">
           <svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z" fill="currentColor"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
         </button>
-        <button id="music" class="round" aria-label="Play a track">
+        <button id="music" class="round" type="button" aria-label="Play a track">
           <svg viewBox="0 0 24 24" width="20" height="20"><path d="M9 18V6l10-2v12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6.5" cy="18" r="2.6" fill="currentColor"/><circle cx="16.5" cy="16" r="2.6" fill="currentColor"/></svg>
         </button>
-        <button id="play" class="round" aria-label="Play / pause" hidden>
+        <button id="play" class="round" type="button" aria-label="Play / pause" hidden>
           <svg viewBox="0 0 24 24" width="20" height="20"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
         </button>
       </div>
@@ -54,6 +55,7 @@
         <h2>Couldn't start the visualizer</h2>
         <p class="error-msg"></p>
         <p class="error-sub">This needs WebGL2 — try an up-to-date Chrome, Safari, Edge or Firefox.</p>
+        <p><a class="home-link" href="/">Back to Qualiacology</a></p>
       </div>
     </div>
 

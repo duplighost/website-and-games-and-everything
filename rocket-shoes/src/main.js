@@ -33,10 +33,25 @@ import { FX, VERSION } from './config.js';
 
 let canvas, bloomCanvas, last = 0;
 
+function showCanvasFallback() {
+  document.body.innerHTML = `
+    <main style="min-height:100vh;display:grid;place-items:center;padding:24px;background:#05070b;color:#eef3ff;font:600 16px/1.5 Inter,system-ui,sans-serif;text-align:center;">
+      <div style="max-width:560px;border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:28px;background:rgba(13,18,28,.72);box-shadow:0 18px 50px rgba(0,0,0,.5);">
+        <h1 style="margin:0 0 12px;font-size:clamp(28px,7vw,46px);letter-spacing:-.04em;">Rocket Shoes needs canvas</h1>
+        <p style="margin:0 0 18px;color:#9eb0cc;">Your browser could not start the 2D renderer.</p>
+        <p><a style="color:#7dfdff;" href="/">Back to Qualiacology</a></p>
+      </div>
+    </main>
+  `;
+}
+
 export function boot() {
   canvas = document.getElementById('game');
   bloomCanvas = document.createElement('canvas');
-  initDraw(canvas, bloomCanvas);
+  if (!initDraw(canvas, bloomCanvas)) {
+    showCanvasFallback();
+    return;
+  }
   resize(canvas, bloomCanvas);
   // stamp the loaded build onto the on-screen badge — proves which version this device
   // is actually running (a cached/stale deploy shows an older number, or no badge at all).

@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { CFG, Quality, REDUCED } from './config.js';
+const REDUCED_MOTION = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+import { CFG, Quality } from './config.js';
 
 // First-person body + camera + flashlight. Movement is velocity-based with
 // acceleration/friction for weight, axis-resolved against the active collider
@@ -127,7 +128,7 @@ export class Player {
     this.pitch = Math.max(-lim, Math.min(lim, this.pitch));
   }
 
-  addShake(amount) { if (REDUCED) amount *= 0.3; this.shake = Math.min(1.6, this.shake + amount); }
+  addShake(amount) { this.shake = Math.min(1.6, this.shake + (REDUCED_MOTION ? amount * 0.15 : amount)); }
 
   // pull the camera to look at a world point (for forced-witness beats)
   forceLook(target, strength) { this.lookTarget = target; this.headTilt = strength; }

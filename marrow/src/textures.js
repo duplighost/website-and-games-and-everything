@@ -56,13 +56,7 @@ function finalize(c, repeat = 1) {
 }
 
 const cache = {};
-function cached(key, fn) {
-  if (cache[key]) return cache[key];
-  const t = fn();
-  if (t && typeof t === 'object') t.__cached = true;   // tag shared textures so dispose() leaves them alone
-  cache[key] = t;
-  return t;
-}
+function cached(key, fn) { return cache[key] || (cache[key] = fn()); }
 
 // --- forest ground: wet earth, scattered rot leaves --------------------------
 export function groundTexture() {
@@ -237,6 +231,7 @@ export function fleshTexture() {
 
 // --- a single staring portrait (faint, only resolves under the flashlight) ---
 export function portraitTexture(seed = 1) {
+  return cached(`portrait:${seed}`, () => {
   const S = 256, [c, ctx] = canvas(S);
   ctx.fillStyle = '#0b0a08'; ctx.fillRect(0, 0, S, S);
   const fbm = makeNoise(seed * 17 + 3);
@@ -273,6 +268,7 @@ export function portraitTexture(seed = 1) {
   const t = new THREE.CanvasTexture(c);
   t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = aniso();
   return t;
+  });
 }
 
 // --- a sclera: pale, wet, threaded with burst red veins ----------------------
@@ -313,6 +309,7 @@ export function eyeballTexture() {
 
 // --- soft round sprite used for dust, embers, eyes in the dark ---------------
 export function softDot(color = '#ffffff') {
+  return cached(`soft:${color}`, () => {
   const S = 64, [c, ctx] = canvas(S);
   const g = ctx.createRadialGradient(S / 2, S / 2, 0, S / 2, S / 2, S / 2);
   g.addColorStop(0, color); g.addColorStop(0.25, color);
@@ -321,4 +318,5 @@ export function softDot(color = '#ffffff') {
   const t = new THREE.CanvasTexture(c);
   t.colorSpace = THREE.SRGBColorSpace;
   return t;
+  });
 }

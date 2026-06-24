@@ -11,11 +11,11 @@ export function setupTouch(player, opts = {}) {
     <div class="tc-stick" id="tcStick"><div class="tc-knob" id="tcKnob"></div></div>
     <div class="tc-look" id="tcLook"></div>
     <div class="tc-buttons">
-      <button class="tc-btn" id="tcSprint" aria-label="sprint">RUN</button>
-      <button class="tc-btn" id="tcCrouch" aria-label="crouch">CROUCH</button>
-      <button class="tc-btn tc-jump" id="tcJump" aria-label="jump">JUMP</button>
+      <button class="tc-btn" id="tcSprint" type="button" aria-label="sprint">RUN</button>
+      <button class="tc-btn" id="tcCrouch" type="button" aria-label="crouch">CROUCH</button>
+      <button class="tc-btn tc-jump" id="tcJump" type="button" aria-label="jump">JUMP</button>
     </div>
-    <button class="tc-interact" id="tcInteract"><span class="k">E</span><span class="t">open</span></button>
+    <button class="tc-interact" id="tcInteract" type="button"><span class="k">E</span><span class="t">open</span></button>
   `;
   document.body.appendChild(root);
 

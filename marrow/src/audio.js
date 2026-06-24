@@ -501,16 +501,6 @@ export const Audio = (() => {
     bp.frequency.setValueAtTime(600, t); bp.frequency.linearRampToValueAtTime(4000, t + seconds);
     n.connect(bp); bp.connect(ng); ng.connect(master); ng.connect(conv); n.start(t);
     crescendoNodes.push(n, ng);
-    // Self-terminating tail: after the peak, let the swell resolve and stop the
-    // sources so the rise can't hang at full gain if the ending never arrives
-    // (e.g. the player retreats from the altar). stopCrescendo() still cuts it early.
-    const releaseT = t + seconds + 0.5;
-    crescendoNodes.forEach((nd) => {
-      try {
-        if (nd.gain) nd.gain.setTargetAtTime(0.0001, releaseT, 1.1);
-        else if (nd.stop) nd.stop(releaseT + 4);
-      } catch (e) {}
-    });
   }
   function stopCrescendo() {
     const t = now();
