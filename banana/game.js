@@ -227,7 +227,7 @@
       vec3 viewDir = normalize(u_cameraPos - v_worldPos);
       vec3 dir = normalize(vec3(-0.35, 0.75, 0.45));
       float nd = max(dot(n, dir), 0.0);
-      vec3 light = vec3(0.18, 0.18, 0.19) + nd * vec3(0.62, 0.58, 0.50);
+      vec3 light = vec3(0.21, 0.19, 0.165) + nd * vec3(0.66, 0.60, 0.50);
 
       vec3 toLamp = vec3(-2.5, 2.7, 1.6) - v_worldPos;
       float lampDist = length(toLamp);
@@ -253,7 +253,7 @@
       vec3 color = base * (light + grime) + spec + base * u_emissive;
       float d = distance(u_cameraPos, v_worldPos);
       float fog = smoothstep(7.0, 17.0, d);
-      vec3 fogColor = vec3(0.055, 0.068, 0.092);
+      vec3 fogColor = vec3(0.06, 0.052, 0.046);
       color = mix(color, fogColor, fog * 0.50);
       gl_FragColor = vec4(color, tex.a * u_alpha);
     }
@@ -446,27 +446,27 @@
   const textures = {
     wall: makeTexture((ctx, s) => {
       const g = ctx.createLinearGradient(0, 0, 0, s);
-      g.addColorStop(0, '#eef2f5');
-      g.addColorStop(0.48, '#c9d1d8');
-      g.addColorStop(1, '#aeb8c2');
+      g.addColorStop(0, '#f4ede0');
+      g.addColorStop(0.48, '#ddd1bd');
+      g.addColorStop(1, '#c7b9a1');
       ctx.fillStyle = g; ctx.fillRect(0, 0, s, s);
-      // soft plaster grain
-      noiseDots(ctx, s, 2300, '#2d3642', 0.010, 0.060);
-      noiseDots(ctx, s, 700, '#ffffff', 0.018, 0.085);
-      // subtle wallpaper/panel rhythm so the big room walls stop reading as gray slabs
+      // soft plaster grain (warm putty paint, not cold drywall)
+      noiseDots(ctx, s, 2300, '#3a2f23', 0.010, 0.060);
+      noiseDots(ctx, s, 700, '#fff7ea', 0.018, 0.085);
+      // subtle wallpaper/panel rhythm so the big room walls stop reading as flat slabs
       for (let x = 0; x <= s; x += s / 4) {
         ctx.globalAlpha = 0.18;
-        ctx.fillStyle = '#ffffff'; ctx.fillRect(x + 1, 0, 1, s);
-        ctx.fillStyle = '#687481'; ctx.fillRect(x - 1, 0, 1, s);
+        ctx.fillStyle = '#fff7ea'; ctx.fillRect(x + 1, 0, 1, s);
+        ctx.fillStyle = '#7c6f5b'; ctx.fillRect(x - 1, 0, 1, s);
       }
       for (let y of [s * .18, s * .46, s * .78]) {
         ctx.globalAlpha = 0.11;
-        ctx.fillStyle = '#ffffff'; ctx.fillRect(0, y, s, 2);
-        ctx.fillStyle = '#6c7784'; ctx.fillRect(0, y + 3, s, 1);
+        ctx.fillStyle = '#fff7ea'; ctx.fillRect(0, y, s, 2);
+        ctx.fillStyle = '#7a6d59'; ctx.fillRect(0, y + 3, s, 1);
       }
       ctx.globalAlpha = 0.16;
       for (let i = 0; i < 22; i++) {
-        ctx.fillStyle = i % 2 ? '#fff' : '#7b8793';
+        ctx.fillStyle = i % 2 ? '#fff7ea' : '#857862';
         ctx.fillRect(Math.random() * s, Math.random() * s, Math.random() * 90 + 20, 1);
       }
       ctx.globalAlpha = 1;
@@ -625,7 +625,7 @@
   };
 
   const materials = {
-    wall: new Material({ texture: textures.wall, color: [0.92, 0.95, 1.0] }),
+    wall: new Material({ texture: textures.wall, color: [1.0, 0.97, 0.9] }),
     tile: new Material({ texture: textures.tile, color: [0.88, 0.88, 0.86] }),
     wood: new Material({ texture: textures.wood, color: [1, 0.94, 0.85] }),
     metal: new Material({ texture: textures.metal, color: [0.84, 0.92, 0.98] }),
@@ -641,7 +641,7 @@
     glass: new Material({ texture: whiteTex, color: [0.72, 0.9, 1.0], alpha: .28, emissive: .16, transparent: true }),
     amber: new Material({ texture: whiteTex, color: [1.0, 0.68, 0.18], alpha: .26, emissive: 1.0, transparent: true }),
     hazard: new Material({ texture: textures.hazard, color: [1, 1, 1] }),
-    softWhite: new Material({ texture: whiteTex, color: [0.92, 0.95, 1.0] }),
+    softWhite: new Material({ texture: whiteTex, color: [1.0, 0.97, 0.9] }),
     red: new Material({ texture: whiteTex, color: [1, 0.18, 0.12], emissive: .15 }),
     green: new Material({ texture: whiteTex, color: [0.1, 0.9, 0.42], emissive: .08 })
   };
