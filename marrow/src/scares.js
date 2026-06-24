@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { Entity } from './entity.js';
 import { Audio } from './audio.js';
+import { REDUCED } from './config.js';
 
 // The Director decides when to frighten you. It owns the Presence, runs the
 // flashlight's failing nerve, sprinkles systemic dread that scales with the
@@ -208,7 +209,10 @@ export class Director {
   _updateTorch(dt) {
     if (this.flickering) {
       this.flickT -= dt;
-      this.player.flicker = Math.random() < 0.5 ? (0.08 + Math.random() * 0.5) : 1;
+      // Reduced-motion: keep the failing torch from hard-strobing to near-black.
+      this.player.flicker = REDUCED
+        ? (0.82 + Math.random() * 0.18)
+        : (Math.random() < 0.5 ? (0.08 + Math.random() * 0.5) : 1);
       if (this.flickT <= 0) { this.flickering = false; this.player.flicker = 1; }
     } else {
       this.player.flicker = 1 - Math.random() * 0.025;   // a constant faint unsteadiness

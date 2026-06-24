@@ -17,9 +17,22 @@ import { buildFinal } from './world/final.js';
 const canvas = document.getElementById('game');
 
 // --- renderer ---
-const renderer = new THREE.WebGLRenderer({
-  canvas, antialias: false, stencil: false, powerPreference: 'high-performance',
-});
+// WebGL can be unavailable (blocklisted GPU, disabled, headless, very old
+// device). Creating the renderer throws in that case; show a readable fallback
+// with a way back to the site instead of a silent black screen, then stop boot.
+let renderer;
+try {
+  if (!canvas) throw new Error('Marrow: missing #game canvas');
+  renderer = new THREE.WebGLRenderer({
+    canvas, antialias: false, stencil: false, powerPreference: 'high-performance',
+  });
+} catch (err) {
+  const fatal = document.getElementById('fatal');
+  if (fatal) fatal.classList.add('show');
+  const boot = document.getElementById('boot');
+  if (boot) boot.style.display = 'none';
+  throw err;
+}
 renderer.setPixelRatio(Quality.pixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -196,6 +209,17 @@ function start() {
 }
 UI.boot.addEventListener('pointerdown', start);
 UI.boot.addEventListener('touchstart', (e) => { e.preventDefault(); start(); }, { passive: false });
+// Keyboard parity: the boot screen is focusable (role=button, tabindex=0), so
+// Enter/Space should start the game too. Focus it so a keyboard user can act.
+UI.boot.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); start(); }
+});
+try { UI.boot.focus({ preventScroll: true }); } catch (e) {}
+// The quiet "back to site" link lives inside the boot overlay; keep taps on it
+// from also firing the boot's start handler.
+const backlink = document.getElementById('backlink');
+if (backlink) ['pointerdown', 'touchstart'].forEach((ev) =>
+  backlink.addEventListener(ev, (e) => e.stopPropagation()));
 
 function showMobHint() {
   const W = window.innerWidth, H = window.innerHeight;

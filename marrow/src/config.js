@@ -5,6 +5,11 @@
 export const IS_TOUCH = (('ontouchstart' in window) || navigator.maxTouchPoints > 0);
 export const IS_MOBILE = IS_TOUCH && /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
+// Honor the OS "reduce motion" preference. Marrow leans on photosensitivity /
+// vestibular triggers (full-screen white stinger flashes, a strobing failing
+// torch, camera shake); when this is set we soften all three at their source.
+export const REDUCED = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
 // Rough GPU tier guess. We can't trust UA, so we lean conservative on touch
 // devices and let the frame-rate governor in main.js adapt further at runtime.
 function guessTier() {

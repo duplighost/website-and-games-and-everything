@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { CFG, Quality } from './config.js';
+import { CFG, Quality, REDUCED } from './config.js';
 
 // First-person body + camera + flashlight. Movement is velocity-based with
 // acceleration/friction for weight, axis-resolved against the active collider
@@ -127,7 +127,7 @@ export class Player {
     this.pitch = Math.max(-lim, Math.min(lim, this.pitch));
   }
 
-  addShake(amount) { this.shake = Math.min(1.6, this.shake + amount); }
+  addShake(amount) { if (REDUCED) amount *= 0.3; this.shake = Math.min(1.6, this.shake + amount); }
 
   // pull the camera to look at a world point (for forced-witness beats)
   forceLook(target, strength) { this.lookTarget = target; this.headTilt = strength; }
