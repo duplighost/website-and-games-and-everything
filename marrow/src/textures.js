@@ -56,7 +56,13 @@ function finalize(c, repeat = 1) {
 }
 
 const cache = {};
-function cached(key, fn) { return cache[key] || (cache[key] = fn()); }
+function cached(key, fn) {
+  if (cache[key]) return cache[key];
+  const t = fn();
+  if (t && typeof t === 'object') t.__cached = true;   // tag shared textures so dispose() leaves them alone
+  cache[key] = t;
+  return t;
+}
 
 // --- forest ground: wet earth, scattered rot leaves --------------------------
 export function groundTexture() {

@@ -100,7 +100,17 @@ function disposeGroup(group) {
     if (o.geometry) o.geometry.dispose();
     if (o.material) {
       const mats = Array.isArray(o.material) ? o.material : [o.material];
-      for (const m of mats) m.dispose(); // shared canvas textures stay cached
+      for (const m of mats) {
+        // material.dispose() does NOT free the material's textures. Dispose the
+        // per-instance (uncached) ones — chiefly portraitTexture/softDot, which
+        // are minted fresh per object and otherwise leak GPU memory on every
+        // level reload. Shared library textures are tagged __cached; leave them.
+        for (const k of ['map', 'normalMap', 'roughnessMap', 'emissiveMap', 'alphaMap', 'aoMap', 'bumpMap']) {
+          const tex = m[k];
+          if (tex && !tex.__cached) tex.dispose();
+        }
+        m.dispose();
+      }
     }
   });
 }
@@ -109,6 +119,7 @@ function unloadLevel() {
   scene.remove(currentLevel.group);
   disposeGroup(currentLevel.group);
   if (ctx.flamesExtra) ctx.flamesExtra.length = 0;
+  Audio.stopCrescendo();   // defensive: never carry the ending swell across a level teardown
   currentLevel = null;
 }
 
