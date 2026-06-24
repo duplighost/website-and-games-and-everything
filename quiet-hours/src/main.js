@@ -96,7 +96,7 @@ async function boot() {
 
   setProgress(0.12, "mixing the paint");
   await frame();
-  mats = new MaterialLibrary();
+  mats = new MaterialLibrary({ cheapGlass: SETTINGS.tier !== "high" });
   ["grass", "asphalt", "concrete", "brick-red", "wood-floor", "glass"].forEach((n) => mats.get(n));
 
   chunks = new ChunkManager(scene, mats, { loadR: SETTINGS.loadR, detailR: SETTINGS.detailR });
