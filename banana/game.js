@@ -1286,7 +1286,7 @@
   canvas.addEventListener('click', e => {
     if (!state.started || state.ended) return;
     if (!isCoarsePointer && document.pointerLockElement !== canvas) {
-      canvas.requestPointerLock?.();
+      canvas.requestPointerLock?.()?.catch(() => {});
     } else if (!isCoarsePointer) {
       interact();
     }
