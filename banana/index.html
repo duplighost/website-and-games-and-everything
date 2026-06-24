@@ -4,6 +4,19 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
   <title>The Screaming Banana Dilemma</title>
+  <meta name="description" content="The Screaming Banana Dilemma — a first-person ethical incident simulator about a kitten, a freezer, and a banana-shaped category error with lungs." />
+  <meta name="theme-color" content="#05070b" />
+  <link rel="canonical" href="https://qualiacology.com/banana/" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='27' font-size='26'%3E%F0%9F%8D%8C%3C/text%3E%3C/svg%3E" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Qualiacology" />
+  <meta property="og:title" content="The Screaming Banana Dilemma" />
+  <meta property="og:description" content="A first-person ethical incident simulator about a kitten, a freezer, and a banana that should not have lungs." />
+  <meta property="og:url" content="https://qualiacology.com/banana/" />
+  <!-- TODO: add a 1200x630 og:image -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="The Screaming Banana Dilemma" />
+  <meta name="twitter:description" content="A first-person ethical incident simulator about a kitten, a freezer, and a banana." />
   <style>
     :root{
       --paper:#fff8df;
@@ -21,7 +34,6 @@
     #gameCanvas{position:fixed;inset:0;width:100%;height:100%;display:block;background:#080a10;cursor:crosshair}
     #startScreen,#endingScreen,#choiceOverlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:20;padding:22px}
     #startScreen{background:radial-gradient(circle at 50% 35%,rgba(255,255,255,.16),rgba(0,0,0,.74) 48%,rgba(0,0,0,.96)),linear-gradient(160deg,#111522,#030407)}
-    #startScreen:before{content:"";position:absolute;inset:0;background:url('assets/freezer_reference.png') center/cover no-repeat;opacity:.18;filter:blur(2px) saturate(.9);transform:scale(1.03)}
     .card{position:relative;width:min(760px,94vw);padding:34px 28px;border:1px solid rgba(255,255,255,.22);border-radius:28px;background:linear-gradient(145deg,rgba(12,18,29,.82),rgba(3,5,8,.74));box-shadow:0 24px 90px rgba(0,0,0,.68),inset 0 1px 0 rgba(255,255,255,.18);backdrop-filter:blur(14px);text-align:center}
     h1{font-size:clamp(2.1rem,7vw,5.5rem);line-height:.94;margin:0 0 18px;letter-spacing:-.06em;text-wrap:balance;text-shadow:0 2px 0 rgba(0,0,0,.3),0 0 38px rgba(255,226,82,.35)}
     .subtitle{font-size:clamp(1rem,2.8vw,1.3rem);line-height:1.45;opacity:.86;margin:8px auto 24px;max-width:630px}
@@ -74,7 +86,7 @@
     <div id="stats"></div>
   </div>
   <div id="prompt"></div>
-  <button id="interactButton" aria-label="Interact">INTERACT</button>
+  <button type="button" id="interactButton" aria-label="Interact">INTERACT</button>
   <div id="toast"></div>
   <div id="help" class="hidden">WASD/Arrows move · Mouse look · E interact · Click scene to capture mouse · Esc releases</div>
   <div id="joystickLeft"><div class="knob"></div></div>
@@ -84,8 +96,9 @@
     <div class="card">
       <h1>You Hear a Silly Scream from your Freezer</h1>
       <p class="subtitle">A short first-person ethical incident simulator about a kitten, a freezer, and a banana-shaped category error with lungs it probably should not have.</p>
-      <button id="startButton">Start</button>
+      <button type="button" id="startButton">Start</button>
       <p class="subtitle" style="font-size:.92rem;opacity:.68;margin-top:18px">Phone: put your left thumb anywhere on the left side to move and your right thumb anywhere on the right side to look. Keyboard: WASD + mouse + E.</p>
+      <a href="/" style="display:inline-block;margin-top:8px;color:rgba(255,255,255,.5);text-decoration:none;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase">↩ qualiacology</a>
     </div>
   </div>
 
@@ -101,7 +114,7 @@
     <div class="card">
       <h2 id="endingTitle"></h2>
       <div id="endingText"></div>
-      <button id="restartButton">Play Again</button>
+      <button type="button" id="restartButton">Play Again</button>
     </div>
   </div>
 
